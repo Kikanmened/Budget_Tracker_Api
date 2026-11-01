@@ -1,8 +1,14 @@
 using System.Text.Json.Serialization;
 using BudgetApi.Endpoints;
 using BudgetApi.Services;
+using BudgetApi.Errors;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// VALIDATION AND PROBLEM DETAILS
+builder.Services.AddValidation();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // STRING <=> ENUM CONVERTER
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -18,6 +24,9 @@ builder.Services.AddSingleton<ITransactionService, TransactionService>();
 builder.Services.AddSingleton<IReportService, ReportService>();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 app.MapGet("/", () => "Hello World!");
 app.MapTransactionEndpoints();
