@@ -1,9 +1,13 @@
 using System.Text.Json.Serialization;
 using BudgetApi.Endpoints;
-using BudgetApi.Services;
 using BudgetApi.Errors;
+using BudgetApi.Services;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// API DOCUMENTATION
+builder.Services.AddOpenApi();
 
 // VALIDATION AND PROBLEM DETAILS
 builder.Services.AddValidation();
@@ -28,7 +32,12 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-app.MapGet("/", () => "Hello World!");
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
+
 app.MapTransactionEndpoints();
 app.MapReportEndpoints();
 
