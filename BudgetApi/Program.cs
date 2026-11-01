@@ -13,6 +13,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 // TransactionService holds the in-memory data, so it must be a singleton.
 builder.Services.AddSingleton<ITransactionService, TransactionService>();
 
+// ReportService is stateless and depends on the singleton transaction service.
+builder.Services.AddSingleton<IReportService, ReportService>();
+
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
